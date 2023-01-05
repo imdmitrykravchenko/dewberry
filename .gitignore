@@ -1,0 +1,6 @@
+node_modules
+build
+.npmrc
+docker/data
+docker/nginx/certs
+.env
