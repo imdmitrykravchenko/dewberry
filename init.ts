@@ -1,13 +1,15 @@
 import execa from "execa";
 import inquirer from "inquirer";
 import fs from "fs";
+import path from "path";
 import dotenv from "dotenv";
 
 const env = dotenv.config();
 const existentProjectName = env.error ? undefined : env.parsed.PROJECT_NAME;
+const dirName = path.basename(__dirname);
 
 inquirer
-  .prompt([{ name: "projectName", default: existentProjectName }])
+  .prompt([{ name: "projectName", default: existentProjectName || dirName }])
   .then(({ projectName }) => {
     if (existentProjectName) {
       if (projectName !== existentProjectName) {
@@ -31,6 +33,18 @@ inquirer
       .join("\n");
 
     fs.writeFileSync(".env", content);
+
+    const packageJson = require("./package.json");
+    const packageLockJson = require("./package-lock.json");
+
+    packageJson.name = projectName;
+    packageLockJson.name = projectName;
+    packageLockJson.packages[""].name = projectName;
+    fs.writeFileSync("./package.json", JSON.stringify(packageJson, null, "  "));
+    fs.writeFileSync(
+      "./package-lock.json",
+      JSON.stringify(packageLockJson, null, "  ")
+    );
 
     execa.commandSync(`sh docker/nginx/cert-gen.sh ${projectName}`);
 
