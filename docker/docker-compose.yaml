@@ -43,7 +43,7 @@ services:
         condition: service_healthy
     volumes:
       - ../src:/usr/src/app/src
-      - ../global.d.ts:/usr/src/app/
+      - ../global.d.ts:/usr/src/app/global.d.ts
 
   frontend:
     build:
@@ -52,8 +52,8 @@ services:
     stdin_open: true
     volumes:
       - ../src:/usr/src/app/src
-      - ../global.d.ts:/usr/src/app/
-      - ../craq.config.json:/usr/src/app/
+      - ../global.d.ts:/usr/src/app/global.d.ts
+      - ../craq.config.json:/usr/src/app/craq.config.json
 
   cdn:
     image: jbergknoff/s3rver
